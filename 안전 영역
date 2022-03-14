@@ -1,0 +1,87 @@
+#include <string>
+#include <string.h>
+#include <vector>
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+int Max;
+int Visit[101][101];
+int Array[101][101];
+void Flooding(int x, int y, int f)
+{
+	Visit[x][y] = true;
+
+	if (x + 1 < Max && !Visit[x + 1][y] && Array[x + 1][y] > f)
+	{
+		Visit[x + 1][y] = true;
+		Flooding(x + 1, y, f);
+
+	}
+
+
+	if (x - 1 >= 0 && !Visit[x - 1][y] && Array[x - 1][y] > f)
+	{
+		Visit[x - 1][y] = true;
+		Flooding(x - 1, y, f);
+	}
+
+	if (y + 1 < Max && !Visit[x][y + 1] && Array[x][y + 1] > f)
+	{
+		Visit[x][y + 1] = true;
+		Flooding(x, y + 1, f);
+	}
+
+	if (y - 1 >= 0 && !Visit[x][y - 1] && Array[x][y - 1] > f)
+	{
+		Visit[x][y - 1] = true;
+		Flooding(x, y - 1, f);
+	}
+}
+
+int main()
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+
+	int num, rain_Min = 100, rain_Max = 0, safe_Count = 1;
+	cin >> Max;
+
+	for (int i = 0; i < Max; i++)
+	{
+		for (int j = 0; j < Max; j++)
+		{
+			cin >> num;
+			if (rain_Max < num)
+				rain_Max = num;
+			if (rain_Min > num)
+				rain_Min = num;
+			Array[i][j] = num;
+		}
+	}
+
+	int Count;
+
+	for (int k = rain_Min; k < rain_Max; k++)
+	{
+		memset(Visit, false, sizeof(Visit));
+		Count = 0;
+		for (int i = 0; i < Max; i++)
+		{
+			for (int j = 0; j < Max; j++)
+			{
+				if (Array[i][j] > k && !Visit[i][j])
+				{
+					Count++;
+					Flooding(i, j, k);
+				}
+			}
+		}
+
+		if (safe_Count < Count)
+			safe_Count = Count;
+	}
+
+	cout << safe_Count;
+}
